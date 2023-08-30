@@ -19,6 +19,6 @@ export const sendEmail = async(data:FormData) => {
         to: receiver,
         subject: subject,
         html: message,
-        reply_to:sender
+        reply_to:sender,
     })
 }

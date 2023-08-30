@@ -21,14 +21,19 @@ export function UploadForm() {
   const [file, setFile] = useState<File[]>([])
   const [fileIds, setFileIds] = useState<string[]>([]);  // <-- Change to store multiple IDs
   const [state,setState] = useState(initialState)
+  const [loading, setLoading] = useState(false);
 
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
+      setLoading(true);  // Start loading
       setFile(Array.from(e.target.files));
-      await uploadFiles(Array.from(e.target.files));  // <-- Automatically upload the files here
+      await uploadFiles(Array.from(e.target.files));  
+      setLoading(false);  // End loading
     }
   };
+
+  
 
   const uploadFiles = async (files: File[]) => {
     try {
@@ -61,31 +66,40 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
 
 
       <div className='flex items-center py-2'>
+      {loading === false ? (
+          <>
         <Button asChild variant="ghost" className=' cursor-pointer'>
          <label htmlFor="file"><PlusCircle size={42}/></label>
         </Button>
-        <input
-          type="file"
-          multiple
-          autoComplete='false'
-          name="file"
-          id='file'
-          className='hidden'
-          onChange={handleFileChange}
-        />
-          
-        <p className='text-[1.8rem]'>Upload</p>
+
+       
+              <input
+              type="file"
+              multiple
+              autoComplete='false'
+              name="file"
+              id='file'
+              className='hidden'
+              onChange={handleFileChange}
+            />
+              
+            <p className='text-[1.8rem]'>Upload</p>
+          </>
+        ) : (
+          <p>Loading</p>
+        )}
+       
       </div>
      
     </div>
 
-    <form action={async(formData) => {
+    <form className=' font-sans' action={async(formData) => {
           await sendEmail(formData);
         }}>
                 <input type="email" name='receiver' value={state.receiver} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='email to'/>
                 <input type="email" name='sender' value={state.sender} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='your email'/>
                 <input type="text" name='subject' value={state.subject} onChange={handleChange}  className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='subject'/>
-                <input type="text" name='message' defaultValue={
+                <input type="hidden"  name='message' defaultValue={
                   fileIds.length > 0 ? `http://localhost:3000/downloads/${fileIds.join(",")}`:''
                 } onChange={handleChange}  className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='message'/>
 
