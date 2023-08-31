@@ -19,6 +19,10 @@ const bucket = process.env.S3_BUCKET_NAME!
 
 export async function POST(req:NextRequest) {
 
+    const MAX_FILE_SIZE_MB = 2; // 5MB as an example
+    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+    const MAX_FILES_COUNT = 3;
+
     const data = await req.formData()
     const file = data.getAll('file') as unknown as File[];
 
@@ -28,6 +32,19 @@ export async function POST(req:NextRequest) {
         })
     }
   
+    if (file.some(f => f.size > MAX_FILE_SIZE_BYTES)) {
+        return new NextResponse(JSON.stringify({ error: `File size should be under ${MAX_FILE_SIZE_MB}MB` }), {
+            status: 400
+        });
+    }
+
+    if (file.length > MAX_FILES_COUNT) {
+        return new NextResponse(JSON.stringify({ error: `You can upload a maximum of ${MAX_FILES_COUNT} files at a time.` }), {
+            status: 400
+        });
+    }
+
+
     const s3 = new AWS.S3();
 
     const uploadedFiles = [];

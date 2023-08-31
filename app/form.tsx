@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ChangeEvent,useState } from 'react'
-import {PlusCircle} from 'lucide-react'
+import {Loader2, PlusCircle} from 'lucide-react'
 import { sendEmail } from '@/actions/send-email';
 import { experimental_useFormStatus as useFormStatus } from 'react-dom'
 
@@ -13,6 +13,9 @@ const initialState = {
         sender:''
 }
 
+const MAX_FILE_SIZE_MB = 1; 
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_FILES_COUNT = 3;
 
 export function UploadForm() {
 
@@ -26,14 +29,37 @@ export function UploadForm() {
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
+
+      const newFiles = Array.from(e.target.files);
+
+      if (newFiles.length > MAX_FILES_COUNT) {
+        alert(`You can upload a maximum of ${MAX_FILES_COUNT} files at a time.`);
+        return;
+      }
+
+      if (newFiles.length + file.length > MAX_FILES_COUNT) {
+        alert(`You can upload a maximum of ${MAX_FILES_COUNT} files in total. You've already selected ${file.length} files.`);
+        return;
+    }
+
+      const oversizedFiles = newFiles.some(file => file.size > MAX_FILE_SIZE_BYTES);
+
+      if (oversizedFiles) {
+            alert(`Please ensure all files are under ${MAX_FILE_SIZE_MB}MB.`);
+            return;
+      }
+
+
       setLoading(true);  // Start loading
-      setFile(Array.from(e.target.files));
-      await uploadFiles(Array.from(e.target.files));  
-      setLoading(false);  // End loading
+      setFile(prevFiles => [...prevFiles, ...newFiles]); // This line will add new files to the existing list
+
+      await uploadFiles(newFiles);  
+      setLoading(false);
     }
   };
 
-  
+
+
 
   const uploadFiles = async (files: File[]) => {
     try {
@@ -49,7 +75,7 @@ export function UploadForm() {
 
       const returnedIds = await res.json();
 
-      setFileIds(returnedIds.id);
+      setFileIds(prevIds => [...prevIds, ...returnedIds.id]);
     } catch (e: any) {
       console.error(e);
     }
@@ -65,7 +91,7 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     <div className='flex flex-col gap-3  py-1 border-b-2'>
 
 
-      <div className='flex items-center py-2'>
+      <div className='flex items-center justify-center py-2'>
       {loading === false ? (
           <>
         <Button asChild variant="ghost" className=' cursor-pointer'>
@@ -86,7 +112,9 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
             <p className='text-[1.8rem]'>Upload</p>
           </>
         ) : (
-          <p>Loading</p>
+          <span>
+            <Loader2 className='animate-spin' size={50}/>
+            </span>
         )}
        
       </div>
@@ -95,6 +123,9 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
 
     <form className=' font-sans' action={async(formData) => {
           await sendEmail(formData);
+          setState(initialState)
+          setFile([])
+          setFileIds([])
         }}>
                 <input type="email" name='receiver' value={state.receiver} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='email to'/>
                 <input type="email" name='sender' value={state.sender} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='your email'/>
@@ -114,8 +145,12 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     <div className='max-w-[500px]'>
         {file.length > 0 && (
             <div className='py-4 px-4 border-b-2 border-black  max-w-[500px]'>
-                <p className='text-xs max-w-[500px]'>{file.map((item) => item.name)}</p>
-            </div>
+          <p className='text-xs max-w-[500px]'>
+                  {file.map((item, index) => (
+                    <span key={index}>{item.name}<br/></span>  // Display each file name on a new line
+                  ))}
+                </p>            
+          </div>
 
         )}
       </div>
