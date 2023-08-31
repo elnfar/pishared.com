@@ -131,7 +131,7 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
                 <input type="email" name='sender' value={state.sender} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='your email'/>
                 <input type="text" name='subject' value={state.subject} onChange={handleChange}  className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='subject'/>
                 <input type="hidden"  name='message' defaultValue={
-                  fileIds.length > 0 ? `http://localhost:3000/downloads/${fileIds.join(",")}`:''
+                  fileIds.length > 0 ? `https://cloust.pro/downloads/${fileIds.join(",")}`:''
                 } onChange={handleChange}  className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='message'/>
 
      

@@ -36,7 +36,7 @@ export default async function page({params}:{params:{id:string}}) {
   
          
               <Button asChild >
-                      <a href={`/api/downloads/${files.map(f => f.id).join(",")}`}>DOWNLOAD</a>
+                      <a href={`https://cloust.pro/api/downloads/${files.map(f => f.id).join(",")}`}>DOWNLOAD</a>
                 </Button>
   
       </div>
