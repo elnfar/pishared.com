@@ -1,14 +1,22 @@
-import Image from 'next/image'
+import { prisma } from '@/lib/prisma'
 import { UploadForm } from './form'
+import Image from 'next/image'
 
-export default function Home() {
+
+
+export default async function Home() {
+
+
+  const files = await prisma.conversion.findMany({
+
+})
   return (
-    <main className="h-screen flex flex-col justify-center px-4 overflow-x-hidden">
-      <video style={{ backgroundColor: '#373434' }} preload='auto' loop autoPlay muted className='absolute left-0 top-0 bottom-0 h-screen object-cover'>
-        <source src='/v.mp4' type='video/mp4'/>
-      </video>
-      <div className='flex flex-col lg:flex-row px-16  items-center gap-12 z-10'>
+    <main className="flex flex-col justify-center px-4 bg-image bg-black">
 
+      <Image src='/z.webp' width={500} height={500} alt='bg-center-image' className=' fixed left-1/2 -translate-x-1/2 opacity-60'/>
+
+
+      <div className='flex flex-col lg:flex-row px-16  items-center gap-12 z-10 m-auto h-screen'>
 
         <div className='z-50'>
           <UploadForm/>
@@ -19,6 +27,8 @@ export default function Home() {
           <p className='font-bold text-lg'>Comedian Guy Montgomery wonders whether it’s worth ‘paying your dues’ at any company when it all</p>
         </div>
       </div>
+
+
     </main>
   )
 }

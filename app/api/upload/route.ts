@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Buffer } from "buffer";
 import { prisma } from "@/lib/prisma";
-import { Status } from "@prisma/client";
 import * as AWS from 'aws-sdk';
 import { randomUUID } from "crypto";
 
@@ -19,7 +18,7 @@ const bucket = process.env.S3_BUCKET_NAME!
 
 export async function POST(req:NextRequest) {
 
-    const MAX_FILE_SIZE_MB = 2; // 5MB as an example
+    const MAX_FILE_SIZE_MB = 5; // 5MB as an example
     const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
     const MAX_FILES_COUNT = 3;
 
@@ -67,7 +66,7 @@ export async function POST(req:NextRequest) {
         const conversion = await prisma.conversion.create({
             data: {
                 s3Key: key,
-                status: Status.DONE,
+                status: 'DONE',
             }
         });
 
