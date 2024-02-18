@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ChangeEvent,useState } from 'react'
-import {Loader2, PlusCircle} from 'lucide-react'
+import {Files, Loader2, PlusCircle} from 'lucide-react'
 import { sendEmail } from '@/actions/send-email';
 import { experimental_useFormStatus as useFormStatus } from 'react-dom'
 
@@ -122,19 +122,11 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     </div>
 
     <form className=' font-sans' action={async(formData) => {
-          await sendEmail(formData);
-          setState(initialState)
-          setFile([])
-          setFileIds([])
-        }}>
-                <input type="email" name='receiver' value={state.receiver} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='email to'/>
-                <input type="email" name='sender' value={state.sender} onChange={handleChange} className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='your email'/>
-                <input type="text" name='subject' value={state.subject} onChange={handleChange}  className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='subject'/>
-                <input type="hidden"  name='message' defaultValue={
-                  fileIds.length > 0 ? `https://cloust.pro/downloads/${fileIds.join(",")}`:''
-                } onChange={handleChange}  className='border-b-2 outline-none p-1 placeholder:text-xs' placeholder='message'/>
 
-     
+        }}>
+          
+          <h1>{`http://localhost:3000/downloads/${fileIds.join(",")}`}</h1>
+                
 
     <div className='flex justify-center py-4 items-center'>
          <SubmitButton name='Transfer'/>
