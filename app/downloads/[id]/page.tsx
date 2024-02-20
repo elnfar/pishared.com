@@ -21,8 +21,8 @@ export default async function page({params}:{params:{id:string}}) {
         
 
     return (
-      <div className='bg-white max-w-[250px] justify-center rounded-3xl p-4'>
-      <div className='flex flex-col gap-3  py-1 border-b-2'>
+      <div className='bg-white rounded-3xl p-4'>
+      <div className='flex flex-col gap-3 py-1 border-b-2'>
   
   
         <div className='flex items-center py-2'>
