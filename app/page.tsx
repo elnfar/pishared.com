@@ -18,7 +18,7 @@ export default async function Home() {
 
       <div className='flex flex-col lg:flex-row px-16  items-center gap-12 z-10 m-auto h-screen'>
 
-        <div className='z-50'>
+        <div className='z-50 w-full'>
           <UploadForm/>
         </div>
 

@@ -2,9 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ChangeEvent,useState } from 'react'
-import {FileEdit, Files, Loader2, PlusCircle} from 'lucide-react'
-import { sendEmail } from '@/actions/send-email';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom'
+import { Loader2, PlusCircle, Share} from 'lucide-react'
 
 const initialState = {
        receiver: '',
@@ -82,8 +80,17 @@ export function UploadForm() {
   }
 
 
+  const copyToClipboard = async (text:any) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log('Content copied to clipboard');
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
+
   return (
-    <div className='bg-white min-w-[400px] justify-center rounded-3xl p-4'>
+    <div className='bg-white w-full justify-center rounded-3xl p-4'>
     <div className='flex flex-col gap-3  py-1 border-b-2'>
 
 
@@ -117,14 +124,17 @@ export function UploadForm() {
      
     </div>
 
-          
-         {!fileIds.at(0) ?  '' :<h1>{`http://localhost:3000/downloads/${fileIds.join(",")}`}</h1>}
-                
+        
+         {fileIds.at(0) && (
+            <div className=' mx-auto w-full flex justify-center py-4'>
+              {/* <h1 className=' truncate'>{`http://localhost:3000/downloads/${fileIds.join(",")}`}</h1> */}
+              <Share className=' cursor-pointer' onClick={() => copyToClipboard(fileIds.at(0) )}/>
+            </div>
+         )}                
   
-
-    <div className='max-w-[500px]'>
+    <div className=' w-full'>
         {file.length > 0 && (
-            <div className='py-4 px-4 border-b-2 border-black  max-w-[500px]'>
+            <div className='py-4 px-4 border-b-2 border-black '>
           <p className='text-xs max-w-[500px]'>
                   {file.map((item, index) => (
                     <span key={index}>{item.name}<br/></span>  // Display each file name on a new line
